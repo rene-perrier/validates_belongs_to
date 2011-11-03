@@ -1,0 +1,7 @@
+*database.yml
+*.cache
+*.log
+*.pid
+tmp/**/*
+.DS_Store
+.idea
