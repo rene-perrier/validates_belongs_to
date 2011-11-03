@@ -1,1 +1,55 @@
-put README info here
+validates_belongs_to
+====================
+
+This ActiveRecord validation macro validates that the record pointed to by a belongs_to association 
+is valid or does exist. 
+
+This validation macro is really useful if you declare foreign key contraints because if you do so and 
+don't use the correct validations, you might find yourselfin a situation where your new ActiveRecord
+might return true when you call valid?, but your database will throw an exception whe you attempt to
+save it (which is breaking the ActiveRecord API since save should return false when the record cannot
+be saved)
+
+here is an example of that problem:
+
+class MyClass
+  belongs_to :other_model
+  #no validation here
+end
+
+my_record = MyClass.new(:other_model_id => 123)  # no record with id 123 in the other_models table
+my.record.valid? # returns true
+my_record.save  # raises an exception, which is not expected since valid? returned true
+
+Of course, you could add 2 validations to your class:
+
+class MyClass
+  belongs_to :other_model
+  
+  validates_presence_of :other_model
+  validates_associated :other_model
+end
+
+And it would work as expected.
+
+However I find it hard to read and I was not happy to have to define 2 validations to solve 1 problem.
+In addition validates_associated validates that the the record pointed to by the belongs_to association 
+is valid even if this is not a new record and this can be a problem if you want to simplify our tests
+and use rails fixtures (you can load invalid fixtures which is a big plus when you know what you are 
+doing)
+
+So I created for fun (and learning experience) a new validation called "validates_belongs_to" and I can 
+now define MyClass as follow
+
+class MyClass
+  belongs_to :other_model
+  
+  validates_belongs_to :other_model
+end
+
+When I unit-test MyClass, all I need is an id to an existing other_model, and not a valid existing
+other_model which can be much more difficult to built (especially if it also has similar dependencies
+itself). If MyClass depends on some data or behaviour in the other_model, I will use Moccha to mock or
+stub these dependencies.
+
+
