@@ -79,4 +79,19 @@ class DiscipleTest < ActiveSupport::TestCase
   #  assert SomeTableWithTwoForeignKeys.private_method_defined?(:validate_belongs_to_for_foo)
   #  assert SomeTableWithTwoForeignKeys.private_method_defined?(:validate_belongs_to_for_bar)
   #end
+
+  # the following test shows how to mock the master
+  # even though in real life, disciples should not mock their master ;-)
+  test "disciple can memorize some wisdom from master" do
+    master = masters(:yoda)
+    disciple = Disciple.new(:name => "novice", :master => master)
+
+    wisdom = "If you find yourself in a hole, stop digging."
+    master.expects(:answer).with("What should I learn today?").returns(wisdom)
+    # we can check that the disciple is memorizing the wisdom too, however this might be seen
+    # as testing the implementation
+    disciple.expects(:memorize).with(wisdom)
+
+    disciple.learn
+  end
 end
