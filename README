@@ -53,3 +53,25 @@ itself). If MyClass depends on some data or behaviour in the other_model, I will
 stub these dependencies.
 
 
+
+How to use:
+===========
+
+the directory validates_belongs_to contains a skeleton Rails application (rails 2.3.8) with 2 Models
+(a Master and a Disciple) and the unit tests for the Disciple demonstrating how validates_belongs_to
+works (and demonstrating that it works too if you run rake test).
+
+If you want to use it in your application, copy the file 
+validates_belongs_to/config/initializers/validates_belongs_to.rb in your app's initializers directory
+and you're good to go.
+
+Note that you must know how to use foreign key constraints with rails which is not always obvious. But you can
+look at the migration files and at the config/environment.rb to get you started.
+
+
+
+More things to do:
+==================
+
+- transform this into a gem or a plugin
+- test under other and newer versions of Rails
